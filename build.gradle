@@ -39,3 +39,7 @@ tasks.named('test') {
 task hogeTask {
     doFirst { println "hogeTask" }
 }
+
+bootJar {
+    doFirst { println "doFirst in bootJar task" }
+}
