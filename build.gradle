@@ -49,10 +49,22 @@ task fugaTask {
     doFirst { println "fugaTask" }
 }
 
-task hogeFugaTask(dependsOn: fugaTask) {
+task hogeFugaTask() {
+    dependsOn tasks.hogeTask
     group 'build'
 
-    doFirst { println "hogeFugaTask" }
+    doFirst {
+        println "hogeFugaTask"
+        println "${gradleProperty}"
+    }
+}
+
+task roopTask() {
+    doFirst {
+        "${configurationProperties}".split(",").each(property ->
+                println property
+        )
+    }
 }
 
 bootJar {
