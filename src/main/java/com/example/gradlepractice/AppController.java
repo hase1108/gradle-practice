@@ -14,4 +14,9 @@ public class AppController {
     public String getProperty() {
         return appConfiguration.getArgument();
     }
+
+    @GetMapping(path = "importArg")
+    public String getImportArgs() {
+        return appConfiguration.getImportArg();
+    }
 }

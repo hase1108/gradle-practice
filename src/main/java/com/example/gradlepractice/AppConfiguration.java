@@ -13,4 +13,6 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 public class AppConfiguration {
 
     private final String argument;
+
+    private final String importArg;
 }

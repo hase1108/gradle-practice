@@ -1,3 +1,8 @@
 app:
   config:
     argument: basement
+spring:
+  profiles:
+    active: dev
+  config:
+    import: file:./import.yml
