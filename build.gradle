@@ -40,6 +40,21 @@ task hogeTask {
     doFirst { println "hogeTask" }
 }
 
+task fugaTask {
+    group 'build'
+
+    println(delegate)
+    println(delegate.class)
+
+    doFirst { println "fugaTask" }
+}
+
+task hogeFugaTask(dependsOn: fugaTask) {
+    group 'build'
+
+    doFirst { println "hogeFugaTask" }
+}
+
 bootJar {
     doFirst { println "doFirst in bootJar task" }
 }
