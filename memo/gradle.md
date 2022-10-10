@@ -12,3 +12,7 @@ jdkの探索は以下の順番で行われる
 2. gradleが探してくるjdk(vendor = JvmVendorSpecで指定可能)
 3. AdoptOpenJDK
 
+## task
+
+参考: https://qiita.com/opengl-8080/items/c482998fa15ce738e2ba
+参考: https://docs.gradle.org/current/userguide/tutorial_using_tasks.html
