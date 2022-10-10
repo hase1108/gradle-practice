@@ -55,13 +55,13 @@ task hogeFugaTask() {
 
     doFirst {
         println "hogeFugaTask"
-        println "${gradleProperty}"
+        println gradleProperty
     }
 }
 
 task roopTask() {
     doFirst {
-        "${configurationProperties}".split(",").each(property ->
+        configurationProperties.split(",").each(property ->
                 println property
         )
     }
