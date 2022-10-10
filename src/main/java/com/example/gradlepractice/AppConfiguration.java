@@ -4,11 +4,11 @@ package com.example.gradlepractice;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConstructorBinding;
 
-@Component
 @Getter
 @RequiredArgsConstructor
+@ConstructorBinding
 @ConfigurationProperties(prefix = "app.config")
 public class AppConfiguration {
 
