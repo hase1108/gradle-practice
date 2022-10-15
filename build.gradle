@@ -8,6 +8,7 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
+    // toolchain 指定したJDKでjavacやjavaコマンドを実行してくれる
     toolchain {
         languageVersion = JavaLanguageVersion.of(11)
         vendor = JvmVendorSpec.AMAZON
@@ -36,37 +37,86 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-task hogeTask {
-    doFirst { println "hogeTask" }
-}
-
 task fugaTask {
     group 'build'
 
+    // 設定フェーズ
+    // delegate = Javaのthisとほぼ同じ
     println(delegate)
-    println(delegate.class)
 
-    doFirst { println "fugaTask" }
+    // 実行フェーズ
+    doFirst { println "fugaTask First" }
+
+    doLast { println "fugaTask Last" }
+
+    // ここも設定フェーズ
+    println(delegate.class)
+}
+
+task hogeTask {
+    // アドホックタスクなのでdoLastを指定する
+    doLast { println "hogeTask" }
 }
 
 task hogeFugaTask() {
     dependsOn tasks.hogeTask
     group 'build'
 
-    doFirst {
+    doLast {
         println "hogeFugaTask"
         println gradleProperty
     }
 }
 
+// プロパティを参照してループさせるタスク
 task roopTask() {
-    doFirst {
+    doLast {
         configurationProperties.split(",").each(property ->
                 println property
         )
     }
 }
 
+// 既存のタスクへアクションの追加
 bootJar {
-    doFirst { println "doFirst in bootJar task" }
+    doLast { println "doFirst in bootJar task" }
+}
+
+
+// 評価前に実行されるタスクのため、project.groupに値が定義されておらず失敗する
+/*beforeEvaluate { project ->
+    if (project.group == 'com.example') {
+        println "Adding task before evaluate to $project"
+        project.task('addBeforeEvaluateTask') {
+            doLast {
+                println "Running task for $project"
+            }
+        }
+    }
+}*/
+
+// 評価後に以下のスクリプトが実行されるのでこちらは普通に動く
+afterEvaluate { project ->
+    if (project.group == 'com.example') {
+        println "Adding task before evaluate to $project"
+        project.task('addAfterEvaluateTask') {
+            doLast {
+                println "Running task for $project"
+            }
+        }
+    }
+}
+
+// プロジェクト評価後に必ず実行される
+gradle.afterProject { project ->
+    if (project.state.failure) {
+        println "Evaluation of $project FAILED"
+    } else {
+        println "Evaluation of $project succeeded"
+    }
+}
+
+// taskが追加された場合に実行される
+tasks.whenTaskAdded { task ->
+    println "Task added $task"
 }
