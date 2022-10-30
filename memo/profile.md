@@ -1,5 +1,7 @@
 # profile
 
+参考: https://spring.pleiades.io/spring-boot/docs/current/reference/html/features.html#features.external-config.files
+
 ## boot 2.4からの変更点
 
 参考: https://spring.pleiades.io/spring-boot/docs/current/reference/html/features.html#features.profiles
@@ -13,4 +15,5 @@
     - "spring.config.activate.on-profile"を利用する
 - プロファイルに関する設定はapplication.yaml/propertiesのみに設定
 - "spring.profiles.group"でプロファイルをグルーピングして、一括で設定することが可能になる
+    - groupingしたさいに、同じ項目がそれぞれのグループで定義されていると、一番最後にグループに追加されているものが有効になる
 - "spring.config.import"で色々なところから設定をimport可能

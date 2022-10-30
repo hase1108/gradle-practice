@@ -1,3 +1,5 @@
 app:
   config:
     argument: dev
+service:
+  mock: true

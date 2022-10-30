@@ -1,5 +1,9 @@
 # gradle
 
+## ディレクトリ構成
+
+https://docs.gradle.org/current/userguide/directory_layout.html#dir:project_root
+
 ## 通知
 
 ビルドスクリプトではビルドが進行した様々なタイミングで通知を受け取る事ができる。
