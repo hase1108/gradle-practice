@@ -59,6 +59,7 @@ task hogeTask {
 }
 
 task hogeFugaTask() {
+    // 依存するタスクを定義できる(hogeFugaタスク実行前には必ずhogeTaskが実行される)
     dependsOn tasks.hogeTask
     group 'build'
 
@@ -119,4 +120,48 @@ gradle.afterProject { project ->
 // taskが追加された場合に実行される
 tasks.whenTaskAdded { task ->
     println "Task added $task"
+}
+
+// ローカル変数の定義1
+def localDef = "localdef"
+
+task printLocalDef() {
+    // ローカル変数の定義1
+    def localDef2 = "localDef2"
+    println localDef
+    println localDef2
+}
+
+task printLocalDef2() {
+    println localDef
+    // localdef2はスコープ範囲外なので使えない
+//    println localDef2
+}
+
+// projectオブジェクトに拡張プロパティ追加
+ext {
+    springVersion = "3.1.0.RELEASE"
+    emailNotification = "build@master.org"
+}
+
+// SourceSetsオブジェクトに拡張プロパティ追加
+sourceSets.all { ext.purpose = null }
+sourceSets {
+    main {
+        purpose = "production"
+    }
+    test {
+        purpose = "test"
+    }
+    plugin {
+        purpose = "production"
+    }
+}
+
+tasks.register('printProperties') {
+    doLast {
+        println springVersion
+        println emailNotification
+        sourceSets.matching { it.purpose == "production" }.each { println it.name }
+    }
 }

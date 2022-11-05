@@ -115,3 +115,36 @@ Settingオブジェクトに対する操作を設定することができる
 > - タスクはグループと説明を定義する必要があります。
 
 > - 構成段階で実行されるロジックを最小限に抑える
+
+## build script
+
+参考:https://docs.gradle.org/current/userguide/writing_build_scripts.html
+
+### オプション
+
+`-q`オプションでgradleのログ出力を抑制してタスクによる出力のみひょうじされるようになる
+
+### 変数
+
+#### ローカル変数
+
+- def を用いて定義できる
+
+### 拡張プロパティ
+
+Gradleで設定されている各種オブジェクトに対して、プログラマ側で拡張のプロパティを設定させることが出来る。
+この時、設定したオブジェクトにアクセスできる場合はプロパティにもアクセス出来るため、通常ローカル変数よりもアクセス出来る範囲が大きくなる。
+
+### gradle/kotolinの力を使える
+
+gradleで記述可能なので当然種々のメソッドを利用できる
+
+```aidl
+tasks.register('upper') {
+    doLast {
+        String someString = 'mY_nAmE'
+        println "Original: $someString"
+        println "Upper case: ${someString.toUpperCase()}"
+    }
+}
+```
