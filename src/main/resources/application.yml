@@ -3,6 +3,13 @@ app:
     argument: basement
 spring:
   profiles:
-    active: dev
+    active: overprod
+    group:
+      prodover:
+        - prod
+        - override
+      overprod:
+        - override
+        - prod
   config:
     import: file:./import.yml

@@ -1,3 +1,4 @@
 app:
   config:
     argument: prod
+    importArg: prod
