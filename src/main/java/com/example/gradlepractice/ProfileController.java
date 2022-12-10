@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProfileController {
 
-
     @GetMapping(path = "profile")
     public String getProfile() {
         return "activate";
