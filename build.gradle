@@ -1,167 +1,204 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.4'
-    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
-    id 'java'
+	id 'org.springframework.boot' version '2.7.4'
+	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+	id 'com.diffplug.spotless' version '6.12.0'
+	id 'java'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    // toolchain 指定したJDKでjavacやjavaコマンドを実行してくれる
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-        vendor = JvmVendorSpec.AMAZON
-    }
+	// toolchain 指定したJDKでjavacやjavaコマンドを実行してくれる
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(11)
+		vendor = JvmVendorSpec.AMAZON
+	}
+}
+
+spotless {
+
+	// 指定したGitブランチとの差分があるファイルのみフォーマットの対象とする
+	ratchetFrom 'origin/master'
+
+	// gradle checkタスクにspotless checkタスクを含めるか否かの設定
+    //enforceCheck false
+
+	// 事前に設定されているformatを指定して有効にすることができる
+	format 'misc', {
+
+		// 対象となるファイルを指定
+		target '*.gradle', '*.md', '.gitignore'
+
+		// どのようなフォーマットを設定するか設定 設定出来る内容はFormatExtensionに記述
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+
+	java {
+		// format形式をgoogleフォーマットで指定
+		// googleやeclipse prettierなどのフォーマットを設定可能
+		googleJavaFormat('1.8').aosp().reflowLongStrings()
+
+		// eclipseのstyle.xmlを利用することも可能
+		// eclipse().configFile('eclipse-java-google-style.xml')
+
+		// JavaExtensionはFormatExtensionを継承しているため
+		indentWithTabs()
+
+		// こちらはJavaExtensionで実装されている
+		formatAnnotations()
+	}
 }
 
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
 }
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
 
 task fugaTask {
-    group 'build'
+	group 'build'
 
-    // 設定フェーズ
-    // delegate = Javaのthisとほぼ同じ
-    println(delegate)
+	// 設定フェーズ
+	// delegate = Javaのthisとほぼ同じ
+	println(delegate)
 
-    // 実行フェーズ
-    doFirst { println "fugaTask First" }
+	// 実行フェーズ
+	doFirst { println "fugaTask First" }
 
-    doLast { println "fugaTask Last" }
+	doLast { println "fugaTask Last" }
 
-    // ここも設定フェーズ
-    println(delegate.class)
+	// ここも設定フェーズ
+	println(delegate.class)
 }
 
 task hogeTask {
-    // アドホックタスクなのでdoLastを指定する
-    doLast { println "hogeTask" }
+	// アドホックタスクなのでdoLastを指定する
+	doLast { println "hogeTask" }
 }
 
 task hogeFugaTask() {
-    // 依存するタスクを定義できる(hogeFugaタスク実行前には必ずhogeTaskが実行される)
-    dependsOn tasks.hogeTask
-    group 'build'
+	// 依存するタスクを定義できる(hogeFugaタスク実行前には必ずhogeTaskが実行される)
+	dependsOn tasks.hogeTask
+	group 'build'
 
-    doLast {
-        println "hogeFugaTask"
-        println gradleProperty
-    }
+	doLast {
+		println "hogeFugaTask"
+		println gradleProperty
+	}
 }
 
 // プロパティを参照してループさせるタスク
 task roopTask() {
-    doLast {
-        configurationProperties.split(",").each(property ->
-                println property
-        )
-    }
+	doLast {
+		configurationProperties.split(",").each { property ->
+			println property
+		}
+	}
 }
 
 // 既存のタスクへアクションの追加
 bootJar {
-    doLast { println "doFirst in bootJar task" }
+	doLast { println "doFirst in bootJar task" }
 }
 
 
 // 評価前に実行されるタスクのため、project.groupに値が定義されておらず失敗する
 /*beforeEvaluate { project ->
-    if (project.group == 'com.example') {
-        println "Adding task before evaluate to $project"
-        project.task('addBeforeEvaluateTask') {
-            doLast {
-                println "Running task for $project"
-            }
-        }
-    }
+	if (project.group == 'com.example') {
+		println "Adding task before evaluate to $project"
+		project.task('addBeforeEvaluateTask') {
+			doLast {
+				println "Running task for $project"
+			}
+		}
+	}
 }*/
 
 // 評価後に以下のスクリプトが実行されるのでこちらは普通に動く
 afterEvaluate { project ->
-    if (project.group == 'com.example') {
-        println "Adding task before evaluate to $project"
-        project.task('addAfterEvaluateTask') {
-            doLast {
-                println "Running task for $project"
-            }
-        }
-    }
+	if (project.group == 'com.example') {
+		println "Adding task before evaluate to $project"
+		project.task('addAfterEvaluateTask') {
+			doLast {
+				println "Running task for $project"
+			}
+		}
+	}
 }
 
 // プロジェクト評価後に必ず実行される
 gradle.afterProject { project ->
-    if (project.state.failure) {
-        println "Evaluation of $project FAILED"
-    } else {
-        println "Evaluation of $project succeeded"
-    }
+	if (project.state.failure) {
+		println "Evaluation of $project FAILED"
+	} else {
+		println "Evaluation of $project succeeded"
+	}
 }
 
 // taskが追加された場合に実行される
 tasks.whenTaskAdded { task ->
-    println "Task added $task"
+	println "Task added $task"
 }
 
 // ローカル変数の定義1
 def localDef = "localdef"
 
 task printLocalDef() {
-    // ローカル変数の定義1
-    def localDef2 = "localDef2"
-    println localDef
-    println localDef2
+	// ローカル変数の定義1
+	def localDef2 = "localDef2"
+	println localDef
+	println localDef2
 }
 
 task printLocalDef2() {
-    println localDef
-    // localdef2はスコープ範囲外なので使えない
+	println localDef
+	// localdef2はスコープ範囲外なので使えない
 //    println localDef2
 }
 
 // projectオブジェクトに拡張プロパティ追加
 ext {
-    springVersion = "3.1.0.RELEASE"
-    emailNotification = "build@master.org"
+	springVersion = "3.1.0.RELEASE"
+	emailNotification = "build@master.org"
 }
 
 // SourceSetsオブジェクトに拡張プロパティ追加
 sourceSets.all { ext.purpose = null }
 sourceSets {
-    main {
-        purpose = "production"
-    }
-    test {
-        purpose = "test"
-    }
-    plugin {
-        purpose = "production"
-    }
+	main {
+		purpose = "production"
+	}
+	test {
+		purpose = "test"
+	}
+	plugin {
+		purpose = "production"
+	}
 }
 
 tasks.register('printProperties') {
-    doLast {
-        println springVersion
-        println emailNotification
-        sourceSets.matching { it.purpose == "production" }.each { println it.name }
-    }
+	doLast {
+		println springVersion
+		println emailNotification
+		sourceSets.matching { it.purpose == "production" }.each { println it.name }
+	}
 }
