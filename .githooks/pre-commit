@@ -2,7 +2,7 @@
 
 set -e
 
-echo "spotlesscheck start..."
+echo "spotlesscheck start"
 
 ./gradlew spotlessCheck
 
