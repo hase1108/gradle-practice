@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+echo "spotlesscheck start"
+
+./gradlew spotlessCheck
+
+echo "spotlesscheck finish."
